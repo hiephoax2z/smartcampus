@@ -55,7 +55,7 @@ define('DB_PASS', '');        // adapter si mot de passe MySQL
 ### 4. Lancer le backend PHP
 
 ```bash
-php -S localhost:8000 -t backend/public
+  
 ```
 
 ### 5. Installer et lancer le frontend
