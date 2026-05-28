@@ -1,0 +1,12 @@
+# Dependencies
+frontend/node_modules/
+
+# Build
+frontend/dist/
+
+# Env
+backend/config/database.local.php
+.env
+
+# OS
+.DS_Store
