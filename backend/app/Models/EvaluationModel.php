@@ -8,6 +8,7 @@ class EvaluationModel extends Model
 {
     protected string $table = 'evaluations';
 
+    //selection du cours par ID
     public function findByCours(int $coursId): array
     {
         $stmt = $this->db->prepare(
@@ -24,6 +25,7 @@ class EvaluationModel extends Model
         return $stmt->fetchAll();
     }
 
+    //creation d'une evaluation
     public function create(array $data): int
     {
         $stmt = $this->db->prepare(
