@@ -7,7 +7,7 @@ require_once ROOT_PATH . '/app/Models/Model.php';
 class EnseignantModel extends Model
 {
     protected string $table = 'enseignants';
-
+    //selection de tout les enseignants
     public function findAll(): array
     {
         $stmt = $this->db->query(
@@ -21,6 +21,7 @@ class EnseignantModel extends Model
         return $stmt->fetchAll();
     }
 
+    //selection d'enseignant par ID
     public function findById(int $id): array|false
     {
         $stmt = $this->db->prepare(
@@ -34,6 +35,7 @@ class EnseignantModel extends Model
         return $stmt->fetch();
     }
 
+    //creation d'enseignant
     public function createWithUser(array $user, array $enseignant): int
     {
         $this->db->beginTransaction();
@@ -73,6 +75,7 @@ class EnseignantModel extends Model
         }
     }
 
+    //maj d'un enseignant
     public function update(int $id, array $user, array $enseignant): bool
     {
         $this->db->beginTransaction();
@@ -102,6 +105,7 @@ class EnseignantModel extends Model
         }
     }
 
+    //suppression d'un enseignant
     public function delete(int $id): bool
     {
         $stmt = $this->db->prepare(
