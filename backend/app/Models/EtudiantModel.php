@@ -8,6 +8,7 @@ class EtudiantModel extends Model
 {
     protected string $table = 'etudiants';
 
+    //prend tout les étudiants
     public function findAll(): array
     {
         $stmt = $this->db->query(
@@ -25,6 +26,7 @@ class EtudiantModel extends Model
         return $stmt->fetchAll();
     }
 
+    //recherche d'etudiant par ID
     public function findById(int $id): array|false
     {
         $stmt = $this->db->prepare(
@@ -38,6 +40,7 @@ class EtudiantModel extends Model
         return $stmt->fetch();
     }
 
+    //création d'étudiant
     public function createWithUser(array $user, array $etudiant): int
     {
         $this->db->beginTransaction();
@@ -79,6 +82,7 @@ class EtudiantModel extends Model
         }
     }
 
+    //MAJ d'étudiants
     public function update(int $id, array $user, array $etudiant): bool
     {
         $this->db->beginTransaction();
@@ -108,6 +112,7 @@ class EtudiantModel extends Model
         }
     }
 
+    //suppression d'étudiant
     public function delete(int $id): bool
     {
         // CASCADE supprime l'étudiant automatiquement
