@@ -8,7 +8,7 @@ class EtudiantModel extends Model
 {
     protected string $table = 'etudiants';
 
-    //prend tout les étudiants
+    //selection de tout les étudiants
     public function findAll(): array
     {
         $stmt = $this->db->query(
