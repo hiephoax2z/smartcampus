@@ -8,6 +8,7 @@ class CoursModel extends Model
 {
     protected string $table = 'cours';
 
+    //selection de tout les cours
     public function findAll(): array
     {
         $stmt = $this->db->query(
@@ -21,6 +22,7 @@ class CoursModel extends Model
         return $stmt->fetchAll();
     }
 
+    //selection d'un cour par ID
     public function findById(int $id): array|false
     {
         $stmt = $this->db->prepare(
@@ -35,6 +37,7 @@ class CoursModel extends Model
         return $stmt->fetch();
     }
 
+    //creation d'un cours
     public function create(array $data): int
     {
         $fields = ['code','nom','description','credits','coefficient',
@@ -53,6 +56,7 @@ class CoursModel extends Model
         return (int) $this->db->lastInsertId();
     }
 
+    //maj d'un cour
     public function update(int $id, array $data): bool
     {
         $allowed = ['code','nom','description','credits','coefficient',
@@ -74,6 +78,7 @@ class CoursModel extends Model
         return $stmt->rowCount() > 0;
     }
 
+    //desactivation d'un cour
     public function disable(int $id): bool
     {
         $stmt = $this->db->prepare("UPDATE cours SET actif = 0 WHERE id = ?");
