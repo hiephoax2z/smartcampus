@@ -8,6 +8,7 @@ class InscriptionModel extends Model
 {
     protected string $table = 'inscriptions';
 
+    //selection d'etudiant par ID
     public function findByEtudiant(int $etudiantId): array
     {
         $stmt = $this->db->prepare(
@@ -24,6 +25,7 @@ class InscriptionModel extends Model
         return $stmt->fetchAll();
     }
 
+    //selection cours par ID
     public function findByCours(int $coursId): array
     {
         $stmt = $this->db->prepare(
@@ -38,6 +40,7 @@ class InscriptionModel extends Model
         return $stmt->fetchAll();
     }
 
+    //verification d'inscription
     public function isAlreadyInscrit(int $etudiantId, int $coursId): bool
     {
         $stmt = $this->db->prepare(
@@ -47,6 +50,7 @@ class InscriptionModel extends Model
         return (bool) $stmt->fetch();
     }
 
+    //compte le nombre d'inscrit
     public function countInscrits(int $coursId): int
     {
         $stmt = $this->db->prepare(
@@ -56,6 +60,7 @@ class InscriptionModel extends Model
         return (int) $stmt->fetchColumn();
     }
 
+    //obtention de la capacité max
     public function getCapaciteMax(int $coursId): int
     {
         $stmt = $this->db->prepare("SELECT capacite_max FROM cours WHERE id = ?");
@@ -63,6 +68,7 @@ class InscriptionModel extends Model
         return (int) $stmt->fetchColumn();
     }
 
+    //inscription
     public function inscrire(int $etudiantId, int $coursId): int
     {
         $stmt = $this->db->prepare(
@@ -72,6 +78,7 @@ class InscriptionModel extends Model
         return (int) $this->db->lastInsertId();
     }
 
+    //annulation d'inscription
     public function annuler(int $id): bool
     {
         $stmt = $this->db->prepare(
