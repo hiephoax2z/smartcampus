@@ -1,3 +1,4 @@
+/* bouton compteur dans la section hero */
 .counter {
   font-size: 16px;
   padding: 5px 10px;
@@ -16,7 +17,7 @@
     outline-offset: 2px;
   }
 }
-
+/*zone d'animation pour les logos dans la section hero*/ 
 .hero {
   position: relative;
 
@@ -55,7 +56,7 @@
       scale(0.8);
   }
 }
-
+/* zone de contenu central avec les titres et les descriptions */
 #center {
   display: flex;
   flex-direction: column;
@@ -69,7 +70,7 @@
     gap: 18px;
   }
 }
-
+/* zone des étapes suivantes avec les icônes et les liens */
 #next-steps {
   display: flex;
   border-top: 1px solid var(--border);
@@ -94,7 +95,7 @@
     text-align: center;
   }
 }
-
+/* zone de documentation avec les liens et les descriptions */
 #docs {
   border-right: 1px solid var(--border);
 
@@ -103,7 +104,7 @@
     border-bottom: 1px solid var(--border);
   }
 }
-
+/* zone des étapes suivantes avec les liens vers les réseaux sociaux et les ressources */
 #next-steps ul {
   list-style: none;
   padding: 0;
@@ -152,7 +153,7 @@
     }
   }
 }
-
+/* zone de séparation entre les sections avec les ticks décoratifs */
 #spacer {
   height: 88px;
   border-top: 1px solid var(--border);
