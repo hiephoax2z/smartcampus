@@ -1,4 +1,4 @@
-GIT_AUTHOR_DATE="2026-05-27T17:30:00" GIT_COMMITTER_DATE="2026-05-27T17:30:00" git commit -m "feat: add students and teachers routes"
+GIT_AUTHOR_DATE="2026-05-28T17:30:00" GIT_COMMITTER_DATE="2026-05-28T17:30:00" git commit -m "feat: add students and teachers routes"
 <?php
 
 declare(strict_types=1);
@@ -15,6 +15,7 @@ require_once ROOT_PATH . '/app/Controllers/SeanceController.php';
 require_once ROOT_PATH . '/app/Controllers/DashboardController.php';
 require_once ROOT_PATH . '/app/Controllers/PresenceController.php';
 require_once ROOT_PATH . '/app/Controllers/NotificationController.php';
+require_once ROOT_PATH . '/app/Controllers/MessageController.php';
 require_once ROOT_PATH . '/app/Middleware/AuthMiddleware.php';
 
 header('Content-Type: application/json');
@@ -313,8 +314,22 @@ match (true) {
             (new UserController())->store();
         })(),
 
+    // ── Messages ──────────────────────────────────────────────────────────
+    $method === 'GET' && $uri === '/api/messages/conversations'
+        => (function () { AuthMiddleware::isAuthenticated(); (new MessageController())->conversations(); })(),
+
+    $method === 'GET' && $uri === '/api/messages/contacts'
+        => (function () { AuthMiddleware::isAuthenticated(); (new MessageController())->contacts(); })(),
+
+    $method === 'GET' && preg_match('#^/api/messages/(\d+)$#', $uri, $m)
+        => (function () use ($m) { AuthMiddleware::isAuthenticated(); (new MessageController())->conversation((int)$m[1]); })(),
+
+    $method === 'POST' && $uri === '/api/messages'
+        => (function () { AuthMiddleware::isAuthenticated(); (new MessageController())->send(); })(),
+
     default => (function () {
         http_response_code(404);
         echo json_encode(['error' => 'Route not found']);
     })(),
 };
+feat: setup API router with auth routes
