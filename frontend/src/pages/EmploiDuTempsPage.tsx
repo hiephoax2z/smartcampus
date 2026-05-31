@@ -43,11 +43,9 @@ function seanceStyle(s: Seance) {
   return { top, height }
 }
 
-/* ── Week helpers ─────────────────────────────────────────────────────────── */
-
 function getMondayOf(offset: number): Date {
   const today = new Date()
-  const day   = today.getDay() // 0=sun
+  const day   = today.getDay()
   const monday = new Date(today)
   monday.setDate(today.getDate() - (day === 0 ? 6 : day - 1) + offset * 7)
   monday.setHours(0, 0, 0, 0)
@@ -71,8 +69,6 @@ function isSameDay(a: Date, b: Date) {
   return a.getDate() === b.getDate() && a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear()
 }
 
-/* ── Component ────────────────────────────────────────────────────────────── */
-
 export default function EmploiDuTempsPage() {
   const { user } = useAuth()
   const [weekOffset,  setWeekOffset]  = useState(0)
@@ -86,7 +82,6 @@ export default function EmploiDuTempsPage() {
     })
   }
 
-  /* Week dates */
   const monday    = useMemo(() => getMondayOf(weekOffset), [weekOffset])
   const weekDates = useMemo(() => JOURS.map((_, i) => addDays(monday, i)), [monday])
   const today     = useMemo(() => { const d = new Date(); d.setHours(0,0,0,0); return d }, [])
@@ -97,8 +92,6 @@ export default function EmploiDuTempsPage() {
     if (m1 === m2) return `${MOIS_LONG[m1]} ${monday.getFullYear()}`
     return `${MOIS_FR[m1]} – ${MOIS_FR[m2]} ${friday.getFullYear()}`
   }, [monday, friday])
-
-  /* ── Data fetching ──────────────────────────────────────────────────── */
 
   const profilId = user?.profil_id ?? null
 
@@ -129,8 +122,6 @@ export default function EmploiDuTempsPage() {
 
   const allSeances: Seance[] = user?.role === 'admin' ? seancesAdmin : seances
 
-  /* ── Stats ──────────────────────────────────────────────────────────── */
-
   const heuresParType: Record<string, number> = {}
   const sallesCount:   Record<string, number> = {}
 
@@ -143,7 +134,6 @@ export default function EmploiDuTempsPage() {
   const maxH      = Math.max(...Object.values(heuresParType), 1)
   const topSalles = Object.entries(sallesCount).sort((a, b) => b[1] - a[1]).slice(0, 5)
 
-  /* Group by day, filtered */
   const parJour: Record<string, Seance[]> = {}
   JOURS.forEach(j => { parJour[j] = [] })
   allSeances.forEach(s => {
@@ -175,54 +165,28 @@ export default function EmploiDuTempsPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <button
               onClick={() => setWeekOffset(w => w - 1)}
-              style={{
-                width: 32, height: 32, borderRadius: 8, border: '1px solid #222',
-                background: '#161616', color: '#777', cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 14, transition: 'all 0.15s',
-              }}
+              style={{ width: 32, height: 32, borderRadius: 8, border: '1px solid #222', background: '#161616', color: '#777', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, transition: 'all 0.15s' }}
               onMouseEnter={e => (e.currentTarget.style.color = '#ccc')}
               onMouseLeave={e => (e.currentTarget.style.color = '#777')}
-            >
-              ‹
-            </button>
+            >‹</button>
 
             <div style={{ textAlign: 'center' }}>
-              <p style={{ color: '#fff', fontSize: 13, fontWeight: 600, minWidth: 160, textAlign: 'center' }}>
-                {weekLabel}
-              </p>
-              <p style={{ color: '#444', fontSize: 11, marginTop: 2 }}>
-                {monday.getDate()} – {friday.getDate()} {MOIS_FR[friday.getMonth()]}
-              </p>
+              <p style={{ color: '#fff', fontSize: 13, fontWeight: 600, minWidth: 160, textAlign: 'center' }}>{weekLabel}</p>
+              <p style={{ color: '#444', fontSize: 11, marginTop: 2 }}>{monday.getDate()} – {friday.getDate()} {MOIS_FR[friday.getMonth()]}</p>
             </div>
 
             <button
               onClick={() => setWeekOffset(w => w + 1)}
-              style={{
-                width: 32, height: 32, borderRadius: 8, border: '1px solid #222',
-                background: '#161616', color: '#777', cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 14, transition: 'all 0.15s',
-              }}
+              style={{ width: 32, height: 32, borderRadius: 8, border: '1px solid #222', background: '#161616', color: '#777', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, transition: 'all 0.15s' }}
               onMouseEnter={e => (e.currentTarget.style.color = '#ccc')}
               onMouseLeave={e => (e.currentTarget.style.color = '#777')}
-            >
-              ›
-            </button>
+            >›</button>
 
             {weekOffset !== 0 && (
               <button
                 onClick={() => setWeekOffset(0)}
-                style={{
-                  fontSize: 11, fontWeight: 600, letterSpacing: '0.08em',
-                  padding: '5px 12px', borderRadius: 6,
-                  background: ACCENT + '18', color: ACCENT,
-                  border: `1px solid ${ACCENT}44`, cursor: 'pointer',
-                  transition: 'all 0.15s',
-                }}
-              >
-                Aujourd'hui
-              </button>
+                style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', padding: '5px 12px', borderRadius: 6, background: ACCENT + '18', color: ACCENT, border: `1px solid ${ACCENT}44`, cursor: 'pointer', transition: 'all 0.15s' }}
+              >Aujourd'hui</button>
             )}
           </div>
         </div>
@@ -235,33 +199,20 @@ export default function EmploiDuTempsPage() {
               <button
                 key={type}
                 onClick={() => toggleType(type)}
-                style={{
-                  padding: '5px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600,
-                  letterSpacing: '0.08em', cursor: 'pointer', transition: 'all 0.15s',
-                  border: `1px solid ${active ? meta.border : '#2a2a2a'}`,
-                  background: active ? meta.chip : 'transparent',
-                  color: active ? meta.text : '#555',
-                }}
-              >
-                {meta.label}
-              </button>
+                style={{ padding: '5px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', cursor: 'pointer', transition: 'all 0.15s', border: `1px solid ${active ? meta.border : '#2a2a2a'}`, background: active ? meta.chip : 'transparent', color: active ? meta.text : '#555' }}
+              >{meta.label}</button>
             )
           })}
         </div>
 
         {/* ── Grid ──────────────────────────────────────────────────── */}
         {allSeances.length === 0 ? (
-          <div style={{
-            background: '#161616', border: '1px solid #1f1f1f',
-            borderRadius: 14, padding: '3rem', textAlign: 'center',
-          }}>
+          <div style={{ background: '#161616', border: '1px solid #1f1f1f', borderRadius: 14, padding: '3rem', textAlign: 'center' }}>
             <p style={{ color: '#444', fontSize: 14 }}>Aucune séance planifiée</p>
           </div>
         ) : (
           <div style={{ background: '#161616', border: '1px solid #1f1f1f', borderRadius: 14, overflow: 'auto' }}>
             <div style={{ display: 'flex', minWidth: 700 }}>
-
-              {/* Colonne heures */}
               <div style={{ width: 56, flexShrink: 0, borderRight: '1px solid #1f1f1f', paddingTop: 52 }}>
                 {HEURES.map(h => (
                   <div key={h} style={{ height: SLOT_HEIGHT, display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end', paddingRight: 10, paddingTop: 4 }}>
@@ -269,77 +220,30 @@ export default function EmploiDuTempsPage() {
                   </div>
                 ))}
               </div>
-
-              {/* Colonnes jours */}
               {JOURS.map((jour, idx) => {
                 const date     = weekDates[idx]
                 const isToday  = isSameDay(date, today)
                 return (
                   <div key={jour} style={{ flex: 1, borderRight: '1px solid #1a1a1a', minWidth: 0 }}>
-
-                    {/* En-tête jour */}
-                    <div style={{
-                      height: 52, display: 'flex', flexDirection: 'column',
-                      alignItems: 'center', justifyContent: 'center',
-                      borderBottom: '1px solid #1f1f1f',
-                      background: isToday ? 'rgba(232,69,37,0.06)' : 'transparent',
-                      gap: 2,
-                    }}>
-                      <span style={{
-                        fontSize: 10, fontWeight: isToday ? 700 : 500, letterSpacing: '0.12em',
-                        color: isToday ? ACCENT : '#555',
-                        textTransform: 'uppercase',
-                      }}>
-                        {jour.slice(0, 3)}
-                      </span>
-                      <span style={{
-                        fontSize: 12, fontWeight: isToday ? 700 : 400,
-                        color: isToday ? '#fff' : '#444',
-                        fontFamily: 'monospace',
-                      }}>
-                        {fmtDay(date)}
-                      </span>
-                      {isToday && (
-                        <span style={{ width: 4, height: 4, borderRadius: '50%', background: ACCENT, display: 'block' }} />
-                      )}
+                    <div style={{ height: 52, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid #1f1f1f', background: isToday ? 'rgba(232,69,37,0.06)' : 'transparent', gap: 2 }}>
+                      <span style={{ fontSize: 10, fontWeight: isToday ? 700 : 500, letterSpacing: '0.12em', color: isToday ? ACCENT : '#555', textTransform: 'uppercase' }}>{jour.slice(0, 3)}</span>
+                      <span style={{ fontSize: 12, fontWeight: isToday ? 700 : 400, color: isToday ? '#fff' : '#444', fontFamily: 'monospace' }}>{fmtDay(date)}</span>
+                      {isToday && (<span style={{ width: 4, height: 4, borderRadius: '50%', background: ACCENT, display: 'block' }} />)}
                     </div>
-
-                    {/* Zone grille */}
                     <div style={{ position: 'relative', height: SLOT_HEIGHT * HEURES.length }}>
                       {HEURES.map((_, i) => (
-                        <div key={i} style={{
-                          position: 'absolute', left: 0, right: 0,
-                          top: i * SLOT_HEIGHT, borderTop: '1px solid #1a1a1a',
-                        }} />
+                        <div key={i} style={{ position: 'absolute', left: 0, right: 0, top: i * SLOT_HEIGHT, borderTop: '1px solid #1a1a1a' }} />
                       ))}
-
                       {parJour[jour].map(s => {
                         const { top, height } = seanceStyle(s)
                         const meta = TYPE_META[s.type] ?? TYPE_META.cours
                         return (
-                          <div
-                            key={s.id}
-                            style={{
-                              position: 'absolute', left: 3, right: 3,
-                              top, height,
-                              borderRadius: 8,
-                              borderLeft: `3px solid ${meta.border}`,
-                              background: meta.bg,
-                              padding: '6px 8px',
-                              overflow: 'hidden',
-                              cursor: 'default',
-                            }}
-                          >
-                            <p style={{ fontSize: 11, fontWeight: 700, color: meta.text, lineHeight: 1.2, marginBottom: 2 }}>
-                              {s.cours_code}
-                            </p>
-                            <p style={{ fontSize: 10, color: meta.text, opacity: 0.8, lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                              {s.cours_nom}
-                            </p>
+                          <div key={s.id} style={{ position: 'absolute', left: 3, right: 3, top, height, borderRadius: 8, borderLeft: `3px solid ${meta.border}`, background: meta.bg, padding: '6px 8px', overflow: 'hidden', cursor: 'default' }}>
+                            <p style={{ fontSize: 11, fontWeight: 700, color: meta.text, lineHeight: 1.2, marginBottom: 2 }}>{s.cours_code}</p>
+                            <p style={{ fontSize: 10, color: meta.text, opacity: 0.8, lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.cours_nom}</p>
                             {height > 40 && (
                               <p style={{ fontSize: 10, color: meta.text, opacity: 0.6, lineHeight: 1.2, marginTop: 2 }}>
-                                {s.heure_debut.slice(0,5)}–{s.heure_fin.slice(0,5)}
-                                {s.salle_nom ? ` · ${s.salle_nom}` : ''}
+                                {s.heure_debut.slice(0,5)}–{s.heure_fin.slice(0,5)}{s.salle_nom ? ` · ${s.salle_nom}` : ''}
                               </p>
                             )}
                           </div>
@@ -349,62 +253,6 @@ export default function EmploiDuTempsPage() {
                   </div>
                 )
               })}
-            </div>
-          </div>
-        )}
-
-        {/* ── Stats section ─────────────────────────────────────────── */}
-        {allSeances.length > 0 && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginTop: '1.5rem' }}>
-
-            <div style={{ background: '#161616', border: '1px solid #1f1f1f', borderRadius: 14, padding: '1.25rem 1.5rem' }}>
-              <h3 style={{ color: '#fff', fontSize: 14, fontWeight: 600, marginBottom: '1rem' }}>
-                Volume horaire par type
-              </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-                {Object.entries(heuresParType).map(([type, h]) => {
-                  const meta = TYPE_META[type] ?? TYPE_META.cours
-                  const pct  = (h / maxH) * 100
-                  return (
-                    <div key={type}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                        <span style={{ color: meta.text, fontSize: 12, fontWeight: 600 }}>{meta.label}</span>
-                        <span style={{ color: '#555', fontSize: 12 }}>{h.toFixed(1)}h</span>
-                      </div>
-                      <div style={{ height: 4, background: '#1f1f1f', borderRadius: 2 }}>
-                        <div style={{ height: '100%', width: `${pct}%`, background: meta.border, borderRadius: 2, transition: 'width 0.5s' }} />
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-
-            <div style={{ background: '#161616', border: '1px solid #1f1f1f', borderRadius: 14, padding: '1.25rem 1.5rem' }}>
-              <h3 style={{ color: '#fff', fontSize: 14, fontWeight: 600, marginBottom: '1rem' }}>
-                Salles fréquentées
-              </h3>
-              {topSalles.length === 0 ? (
-                <p style={{ color: '#444', fontSize: 13 }}>Aucune salle renseignée</p>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {topSalles.map(([salle, count], i) => (
-                    <div key={salle} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <span style={{
-                        width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
-                        background: i === 0 ? ACCENT : '#222',
-                        color: i === 0 ? '#fff' : '#555',
-                        fontSize: 10, fontWeight: 700,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      }}>
-                        {i + 1}
-                      </span>
-                      <span style={{ flex: 1, color: '#ccc', fontSize: 13 }}>{salle}</span>
-                      <span style={{ color: '#555', fontSize: 12 }}>{count} séance{count > 1 ? 's' : ''}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
         )}
