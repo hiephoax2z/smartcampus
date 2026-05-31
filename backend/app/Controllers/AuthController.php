@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 require_once ROOT_PATH . '/app/Models/UserModel.php';
-
+// Contrôleur d'authentification, gère les actions de login, logout et récupération des informations de l'utilisateur connecté.
 class AuthController
 {
     private UserModel $model;
-
+// Constructeur qui initialise le modèle utilisateur et démarre la session si elle n'est pas déjà active.
     public function __construct()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -15,7 +15,7 @@ class AuthController
         }
         $this->model = new UserModel();
     }
-
+// Action de login qui vérifie les informations d'identification de l'utilisateur et crée une session si elles sont valides. Retourne les informations de l'utilisateur connecté ou une erreur en cas d'échec.
     public function login(): void
     {
         $body = json_decode(file_get_contents('php://input'), true);
@@ -25,7 +25,7 @@ class AuthController
             echo json_encode(['error' => 'email et password sont requis']);
             return;
         }
-
+// Recherche de l'utilisateur par email
         $user = $this->model->findByEmail($body['email']);
         
         if (!$user) {
@@ -53,7 +53,7 @@ class AuthController
             $stmt->execute([$user['id']]);
             $profilId = $stmt->fetchColumn() ?: null;
         }
-
+// Stockage des informations de l'utilisateur dans la session, y compris un champ profil_id pour faire le lien avec les tables spécifiques aux rôles (étudiant ou enseignant).
         $_SESSION['user'] = [
             'id'        => $user['id'],
             'nom'       => $user['nom'],
@@ -65,7 +65,7 @@ class AuthController
 
         echo json_encode($_SESSION['user']);
     }
-
+// Action de logout qui détruit la session de l'utilisateur et retourne un message de confirmation.
     public function logout(): void
     {
         $_SESSION = [];
@@ -81,7 +81,7 @@ class AuthController
 
         echo json_encode(['message' => 'Déconnecté']);
     }
-
+// Action qui retourne les informations de l'utilisateur actuellement connecté. Si aucune session n'est active, retourne une erreur 401.
     public function me(): void
     {
         if (empty($_SESSION['user'])) {

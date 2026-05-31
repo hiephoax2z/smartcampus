@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 require_once ROOT_PATH . '/app/Models/Model.php';
-
+// modèle du cours, gestion des cours et de leurs informations
 class CoursModel extends Model
 {
     protected string $table = 'cours';

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 require_once ROOT_PATH . '/app/Models/InscriptionModel.php';
-
+// Contrôleur d'inscription, gère les actions liées à l'inscription des étudiants aux cours, à la consultation des inscriptions et à l'annulation des inscriptions.
 class InscriptionController
 {
     private InscriptionModel $model;
@@ -12,7 +12,7 @@ class InscriptionController
     {
         $this->model = new InscriptionModel();
     }
-
+// Action qui retourne la liste des inscriptions. Permet de filtrer par étudiant ou par cours en utilisant des paramètres de requête. Retourne une erreur si les paramètres requis ne sont pas fournis.
     public function index(): void
     {
         $etudiantId = isset($_GET['etudiant_id']) ? (int)$_GET['etudiant_id'] : null;
@@ -31,7 +31,7 @@ class InscriptionController
         http_response_code(400);
         echo json_encode(['error' => 'Paramètre etudiant_id ou cours_id requis']);
     }
-
+// Action de création d'une inscription. Exige les champs etudiant_id et cours_id. Vérifie que l'étudiant n'est pas déjà inscrit au cours et que la capacité du cours n'est pas dépassée avant de créer l'inscription. Retourne l'ID de la nouvelle inscription ou une erreur en cas de conflit ou de dépassement de capacité.
     public function store(): void
     {
         $body = json_decode(file_get_contents('php://input'), true) ?? [];

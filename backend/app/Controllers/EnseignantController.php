@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 require_once ROOT_PATH . '/app/Models/EnseignantModel.php';
-
+// Contrôleur d'enseignant, gère les actions liées à la gestion des enseignants.
 class EnseignantController
 {
     private EnseignantModel $model;
@@ -30,7 +30,7 @@ class EnseignantController
 
         echo json_encode($enseignant);
     }
-
+// Action de création d'un enseignant. Exige des champs spécifiques pour l'utilisateur et l'enseignant. Retourne l'ID du nouvel enseignant ou une erreur en cas de conflit (email ou numéro enseignant déjà utilisé).
     public function store(): void
     {
         $body = json_decode(file_get_contents('php://input'), true) ?? [];
@@ -58,7 +58,7 @@ class EnseignantController
             echo json_encode(['error' => 'Email ou numéro enseignant déjà utilisé']);
         }
     }
-
+// Action de mise à jour d'un enseignant. Permet de mettre à jour les informations de l'utilisateur et de l'enseignant. Retourne un message de confirmation ou une erreur si l'enseignant n'est pas trouvé.
     public function update(int $id): void
     {
         $enseignant = $this->model->findById($id);
@@ -83,7 +83,7 @@ class EnseignantController
         $this->model->update($id, $userUpdate, $enseignantUpdate);
         echo json_encode(['message' => 'Enseignant mis à jour']);
     }
-
+// Action de suppression d'un enseignant. Retourne un message de confirmation ou une erreur si l'enseignant n'est pas trouvé.
     public function destroy(int $id): void
     {
         $enseignant = $this->model->findById($id);

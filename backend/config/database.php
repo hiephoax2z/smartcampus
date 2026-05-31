@@ -1,13 +1,13 @@
 <?php
 
 declare(strict_types=1);
-
+// Configuration de la base de données pour l'application Smart Campus. Définit les constantes de connexion et une fonction pour obtenir une instance PDO.
 define('DB_HOST', 'localhost');
 define('DB_PORT', '3306');
 define('DB_NAME', 'smartcampus');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-
+// Fonction pour obtenir une connexion PDO à la base de données. Utilise un singleton pour réutiliser la même connexion.
 function getConnection(): PDO
 {
     static $pdo = null;

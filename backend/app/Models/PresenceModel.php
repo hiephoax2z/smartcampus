@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 require_once ROOT_PATH . '/app/Models/Model.php';
-
+// modèle de la présence, gestion des présences pour les séances de cours
 class PresenceModel extends Model
 {
     protected string $table = 'presences';
@@ -21,7 +21,7 @@ class PresenceModel extends Model
         $stmt->execute([$seanceId]);
         return $stmt->fetchAll();
     }
-
+// Récupère les présences d'un étudiant pour toutes ses séances
     public function findByEtudiant(int $etudiantId): array
     {
         $stmt = $this->db->prepare(
@@ -36,7 +36,7 @@ class PresenceModel extends Model
         $stmt->execute([$etudiantId]);
         return $stmt->fetchAll();
     }
-
+// Initialise les présences pour une séance donnée, en créant des entrées "absent" pour tous les inscrits qui n'ont pas encore de présence enregistrée. Retourne le nombre de présences créées.
     public function initSeance(int $seanceId, int $enseignantId): int
     {
         // Récupère tous les inscrits au cours de cette séance
@@ -65,7 +65,7 @@ class PresenceModel extends Model
         }
         return $count;
     }
-
+// Met à jour le statut de présence d'un étudiant pour une séance donnée, avec un commentaire optionnel. Retourne true si la mise à jour a réussi, false sinon.
     public function updateStatut(int $id, string $statut, ?string $commentaire, int $enseignantId): bool
     {
         $stmt = $this->db->prepare(
