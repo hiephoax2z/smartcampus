@@ -17,7 +17,7 @@ class EnseignantController
     {
         echo json_encode($this->model->findAll());
     }
-
+// Action qui retourne les informations d'un enseignant spécifique. Retourne une erreur si l'enseignant n'est pas trouvé.
     public function show(int $id): void
     {
         $enseignant = $this->model->findById($id);
@@ -45,7 +45,7 @@ class EnseignantController
                 return;
             }
         }
-
+// Validation du format de l'email
         try {
             $id = $this->model->createWithUser(
                 array_intersect_key($body, array_flip([...$requiredUser, 'password'])),
