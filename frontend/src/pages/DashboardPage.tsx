@@ -244,12 +244,10 @@ function DashboardEnseignant() {
   const totalEtudiants  = cours.reduce((s: number, c: CoursEnseignant) => s + (c.nb_inscrits || 0), 0)
   const unread          = notifData?.unread ?? 0
 
-  // Today
   const jourIdx      = new Date().getDay()
   const JOURS_FR     = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi']
   const todaySessions: Seance[] = prochainesSeances.filter((s: Seance) => s.jour_semaine === JOURS_FR[jourIdx])
 
-  // Most urgent evaluation (most copies remaining)
   const urgentEval: EvaluationAVenir | null = evaluationsAVenir.reduce(
     (max: EvaluationAVenir | null, ev: EvaluationAVenir) => {
       const remaining = ev.nb_inscrits - ev.notes_saisies
@@ -334,7 +332,6 @@ function DashboardEnseignant() {
                 </a>
               </div>
 
-              {/* Table header */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 120px 100px', gap: 8, padding: '0 0 8px', borderBottom: '1px solid #1f1f1f' }}>
                 {['Cours', 'Inscrits', 'Progression', 'Moyenne'].map((h, i) => (
                   <span key={h} style={{ color: '#444', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, textAlign: i > 0 ? 'right' : 'left' }}>
@@ -343,7 +340,6 @@ function DashboardEnseignant() {
                 ))}
               </div>
 
-              {/* Rows */}
               {(notesStats as NotesStat[]).map((stat, i) => {
                 const pct = stat.nb_evaluations > 0
                   ? Math.round((stat.nb_notes_saisies / (stat.nb_evaluations * stat.nb_inscrits || 1)) * 100)
@@ -639,12 +635,10 @@ function DashboardEtudiant() {
                         padding: '0.875rem 1rem', borderRadius: 12,
                         background: '#161616', border: '1px solid #1f1f1f',
                       }}>
-                        {/* Type badge */}
                         <div style={{
                           width: 4, height: 44, borderRadius: 2,
                           background: tc.border, flexShrink: 0,
                         }} />
-                        {/* Info */}
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <p style={{ color: '#fff', fontSize: '14px', fontWeight: 600, marginBottom: 2 }}>
                             {s.cours_nom}
@@ -654,7 +648,6 @@ function DashboardEtudiant() {
                             {s.salle_nom ? ` · ${s.salle_nom}` : ''}
                           </p>
                         </div>
-                        {/* Type pill */}
                         <span style={{
                           fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
                           padding: '2px 8px', borderRadius: 4,
@@ -663,7 +656,6 @@ function DashboardEtudiant() {
                         }}>
                           {TYPE_LABEL[s.type] ?? s.type.toUpperCase()}
                         </span>
-                        {/* Status */}
                         <span style={{
                           fontSize: 10, fontWeight: 700, letterSpacing: '0.12em',
                           padding: '4px 10px', borderRadius: 20,
