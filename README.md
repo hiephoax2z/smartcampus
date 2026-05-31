@@ -73,7 +73,7 @@ L'application est accessible sur **http://localhost:5173**
 
 ## Comptes de démonstration
 
-| Rôle | Email | Mot de passe |
+| Rôle | Email | Mot de passe 
 |---|---|---|
 | Administrateur | admin@smartcampus.fr | password |
 | Enseignant | j.moreau@smartcampus.fr | password |
