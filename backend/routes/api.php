@@ -1,4 +1,4 @@
-GIT_AUTHOR_DATE="2026-05-27T16:30:00" GIT_COMMITTER_DATE="2026-05-27T16:30:00" git commit -m "feat: add students and teachers routes"
+GIT_AUTHOR_DATE="2026-05-27T17:30:00" GIT_COMMITTER_DATE="2026-05-27T17:30:00" git commit -m "feat: add students and teachers routes"
 <?php
 
 declare(strict_types=1);
@@ -12,6 +12,9 @@ require_once ROOT_PATH . '/app/Controllers/InscriptionController.php';
 require_once ROOT_PATH . '/app/Controllers/NoteController.php';
 require_once ROOT_PATH . '/app/Controllers/EvaluationController.php';
 require_once ROOT_PATH . '/app/Controllers/SeanceController.php';
+require_once ROOT_PATH . '/app/Controllers/DashboardController.php';
+require_once ROOT_PATH . '/app/Controllers/PresenceController.php';
+require_once ROOT_PATH . '/app/Controllers/NotificationController.php';
 require_once ROOT_PATH . '/app/Middleware/AuthMiddleware.php';
 
 header('Content-Type: application/json');
@@ -220,6 +223,75 @@ match (true) {
         => (function () use ($m) {
             AuthMiddleware::hasRole('admin');
             (new SeanceController())->destroy((int)$m[1]);
+        })(),
+
+    // ── Présences ─────────────────────────────────────────────────────────
+    $method === 'GET' && $uri === '/api/presences'
+        => (function () {
+            AuthMiddleware::isAuthenticated();
+            (new PresenceController())->index();
+        })(),
+
+    $method === 'POST' && $uri === '/api/presences'
+        => (function () {
+            AuthMiddleware::isAuthenticated();
+            (new PresenceController())->upsert();
+        })(),
+
+    $method === 'POST' && preg_match('#^/api/presences/seance/(\d+)/init$#', $uri, $m)
+        => (function () use ($m) {
+            AuthMiddleware::isAuthenticated();
+            (new PresenceController())->init((int)$m[1]);
+        })(),
+
+    $method === 'GET' && $uri === '/api/presences/bilan'
+        => (function () {
+            AuthMiddleware::isAuthenticated();
+            (new PresenceController())->bilanEtudiant();
+        })(),
+
+    // ── Notifications ─────────────────────────────────────────────────────
+    $method === 'GET' && $uri === '/api/notifications'
+        => (function () {
+            AuthMiddleware::isAuthenticated();
+            (new NotificationController())->index();
+        })(),
+
+    $method === 'GET' && $uri === '/api/notifications/unread'
+        => (function () {
+            AuthMiddleware::isAuthenticated();
+            (new NotificationController())->unreadCount();
+        })(),
+
+    $method === 'PUT' && preg_match('#^/api/notifications/(\d+)/read$#', $uri, $m)
+        => (function () use ($m) {
+            AuthMiddleware::isAuthenticated();
+            (new NotificationController())->markRead((int)$m[1]);
+        })(),
+
+    $method === 'PUT' && $uri === '/api/notifications/read-all'
+        => (function () {
+            AuthMiddleware::isAuthenticated();
+            (new NotificationController())->markAllRead();
+        })(),
+
+    // ── Dashboard ─────────────────────────────────────────────────────────
+    $method === 'GET' && $uri === '/api/dashboard/etudiant'
+        => (function () {
+            AuthMiddleware::isAuthenticated();
+            (new DashboardController())->etudiant();
+        })(),
+
+    $method === 'GET' && $uri === '/api/dashboard/enseignant'
+        => (function () {
+            AuthMiddleware::isAuthenticated();
+            (new DashboardController())->enseignant();
+        })(),
+
+    $method === 'GET' && $uri === '/api/dashboard/admin'
+        => (function () {
+            AuthMiddleware::hasRole('admin');
+            (new DashboardController())->admin();
         })(),
 
     // ── Users ─────────────────────────────────────────────────────────────
