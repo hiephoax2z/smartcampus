@@ -93,7 +93,7 @@ class EtudiantController
             echo json_encode(['error' => 'Étudiant introuvable']);
             return;
         }
-
+// Suppression de l'étudiant et de l'utilisateur associé
         $this->model->delete($id);
         echo json_encode(['message' => 'Étudiant supprimé']);
     }
