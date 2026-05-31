@@ -11,12 +11,15 @@ interface Inscrit {
   numero_etudiant: string
 }
 
+
+
 interface Evaluation {
   id: number
   nom: string
   type: string
   verrouille: number
 }
+
 
 interface Props {
   coursId: number
@@ -25,12 +28,14 @@ interface Props {
   onClose: () => void
 }
 
+
 export default function AddNoteModal({ coursId, inscrits, evaluations, onClose }: Props) {
   const { user } = useAuth()
   const queryClient = useQueryClient()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  
 
   const [etudiantId, setEtudiantId]     = useState('')
   const [evaluationId, setEvaluationId] = useState('')
@@ -44,12 +49,14 @@ export default function AddNoteModal({ coursId, inscrits, evaluations, onClose }
     setError('')
 
     const noteVal = parseFloat(note)
+    
     if (isNaN(noteVal) || noteVal < 0 || noteVal > 20) {
       setError('La note doit être comprise entre 0 et 20')
       return
     }
 
     setLoading(true)
+    
     try {
       await api.post('/notes', {
         etudiant_id:   parseInt(etudiantId),
@@ -58,6 +65,7 @@ export default function AddNoteModal({ coursId, inscrits, evaluations, onClose }
         commentaire:   commentaire || null,
         saisie_par:    user?.id,
       })
+      
       setSuccess(true)
       queryClient.invalidateQueries({ queryKey: ['notes-cours', String(coursId)] })
       setTimeout(onClose, 800)
@@ -68,15 +76,19 @@ export default function AddNoteModal({ coursId, inscrits, evaluations, onClose }
     }
   }
 
+  
   return (
-    // Backdrop
+    // Backdropp
+    
     <div
       className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4"
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
+      
       <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          
           <h2 className="font-semibold text-gray-800">Saisir une note</h2>
           <button onClick={onClose}
             className="text-gray-400 hover:text-gray-600 text-xl leading-none">×</button>
@@ -91,6 +103,7 @@ export default function AddNoteModal({ coursId, inscrits, evaluations, onClose }
             <p className="text-sm text-emerald-600 bg-emerald-50 px-3 py-2 rounded">Note enregistrée !</p>
           )}
 
+          
           <div className="space-y-1">
             <label className="text-sm font-medium text-gray-700">
               Étudiant <span className="text-red-500">*</span>
@@ -103,6 +116,7 @@ export default function AddNoteModal({ coursId, inscrits, evaluations, onClose }
                   {i.prenom} {i.nom} ({i.numero_etudiant})
                 </option>
               ))}
+              
             </select>
           </div>
 
@@ -110,11 +124,13 @@ export default function AddNoteModal({ coursId, inscrits, evaluations, onClose }
             <label className="text-sm font-medium text-gray-700">
               Évaluation <span className="text-red-500">*</span>
             </label>
+            
             {evalDisponibles.length === 0 ? (
               <p className="text-sm text-amber-600 bg-amber-50 px-3 py-2 rounded">
                 Toutes les évaluations sont verrouillées.
               </p>
             ) : (
+      
               <select required value={evaluationId} onChange={e => setEvaluationId(e.target.value)}
                 className={select}>
                 <option value="">— Choisir une évaluation —</option>
@@ -138,6 +154,7 @@ export default function AddNoteModal({ coursId, inscrits, evaluations, onClose }
             </div>
           </div>
 
+          
           <div className="space-y-1">
             <label className="text-sm font-medium text-gray-700">Commentaire</label>
             <textarea value={commentaire} onChange={e => setCommentaire(e.target.value)}
@@ -145,6 +162,7 @@ export default function AddNoteModal({ coursId, inscrits, evaluations, onClose }
               placeholder="Observation facultative…" />
           </div>
 
+          
           <div className="flex gap-3 pt-1">
             <button type="submit"
               disabled={loading || success || evalDisponibles.length === 0}
@@ -161,5 +179,8 @@ export default function AddNoteModal({ coursId, inscrits, evaluations, onClose }
     </div>
   )
 }
+
+
+
 
 const select = 'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
