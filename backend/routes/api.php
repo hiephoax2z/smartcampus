@@ -1,9 +1,12 @@
-GIT_AUTHOR_DATE="2026-05-27T10:15:00" GIT_COMMITTER_DATE="2026-03-27T10:15:00" git commit -m "feat: setup API router with auth routes"
+GIT_AUTHOR_DATE="2026-05-27T16:30:00" GIT_COMMITTER_DATE="2026-04-01T14:30:00" git commit -m "feat: add students and teachers routes"
 <?php
 
 declare(strict_types=1);
 
 require_once ROOT_PATH . '/app/Controllers/AuthController.php';
+require_once ROOT_PATH . '/app/Controllers/UserController.php';
+require_once ROOT_PATH . '/app/Controllers/EtudiantController.php';
+require_once ROOT_PATH . '/app/Controllers/EnseignantController.php';
 require_once ROOT_PATH . '/app/Middleware/AuthMiddleware.php';
 
 header('Content-Type: application/json');
@@ -32,6 +35,87 @@ match (true) {
 
     $method === 'GET' && $uri === '/api/auth/me'
         => (new AuthController())->me(),
+
+    // ── Étudiants ─────────────────────────────────────────────────────────
+    $method === 'GET' && $uri === '/api/etudiants'
+        => (function () {
+            AuthMiddleware::hasRole('admin');
+            (new EtudiantController())->index();
+        })(),
+
+    $method === 'GET' && preg_match('#^/api/etudiants/(\d+)$#', $uri, $m)
+        => (function () use ($m) {
+            AuthMiddleware::isAuthenticated();
+            (new EtudiantController())->show((int)$m[1]);
+        })(),
+
+    $method === 'POST' && $uri === '/api/etudiants'
+        => (function () {
+            AuthMiddleware::hasRole('admin');
+            (new EtudiantController())->store();
+        })(),
+
+    $method === 'PUT' && preg_match('#^/api/etudiants/(\d+)$#', $uri, $m)
+        => (function () use ($m) {
+            AuthMiddleware::hasRole('admin');
+            (new EtudiantController())->update((int)$m[1]);
+        })(),
+
+    $method === 'DELETE' && preg_match('#^/api/etudiants/(\d+)$#', $uri, $m)
+        => (function () use ($m) {
+            AuthMiddleware::hasRole('admin');
+            (new EtudiantController())->destroy((int)$m[1]);
+        })(),
+
+    // ── Enseignants ───────────────────────────────────────────────────────
+    $method === 'GET' && $uri === '/api/enseignants'
+        => (function () {
+            AuthMiddleware::hasRole('admin');
+            (new EnseignantController())->index();
+        })(),
+
+    $method === 'GET' && preg_match('#^/api/enseignants/(\d+)$#', $uri, $m)
+        => (function () use ($m) {
+            AuthMiddleware::isAuthenticated();
+            (new EnseignantController())->show((int)$m[1]);
+        })(),
+
+    $method === 'POST' && $uri === '/api/enseignants'
+        => (function () {
+            AuthMiddleware::hasRole('admin');
+            (new EnseignantController())->store();
+        })(),
+
+    $method === 'PUT' && preg_match('#^/api/enseignants/(\d+)$#', $uri, $m)
+        => (function () use ($m) {
+            AuthMiddleware::hasRole('admin');
+            (new EnseignantController())->update((int)$m[1]);
+        })(),
+
+    $method === 'DELETE' && preg_match('#^/api/enseignants/(\d+)$#', $uri, $m)
+        => (function () use ($m) {
+            AuthMiddleware::hasRole('admin');
+            (new EnseignantController())->destroy((int)$m[1]);
+        })(),
+
+    // ── Users ─────────────────────────────────────────────────────────────
+    $method === 'GET' && $uri === '/api/users'
+        => (function () {
+            AuthMiddleware::isAuthenticated();
+            (new UserController())->index();
+        })(),
+
+    $method === 'GET' && preg_match('#^/api/users/(\d+)$#', $uri, $m)
+        => (function () use ($m) {
+            AuthMiddleware::isAuthenticated();
+            (new UserController())->show((int)$m[1]);
+        })(),
+
+    $method === 'POST' && $uri === '/api/users'
+        => (function () {
+            AuthMiddleware::hasRole('admin');
+            (new UserController())->store();
+        })(),
 
     default => (function () {
         http_response_code(404);
