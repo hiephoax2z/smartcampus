@@ -161,32 +161,15 @@ export default function EmploiDuTempsPage() {
             </h1>
           </div>
 
-          {/* Navigation semaine */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <button
-              onClick={() => setWeekOffset(w => w - 1)}
-              style={{ width: 32, height: 32, borderRadius: 8, border: '1px solid #222', background: '#161616', color: '#777', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, transition: 'all 0.15s' }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#ccc')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#777')}
-            >‹</button>
-
+            <button onClick={() => setWeekOffset(w => w - 1)} style={{ width: 32, height: 32, borderRadius: 8, border: '1px solid #222', background: '#161616', color: '#777', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, transition: 'all 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = '#ccc')} onMouseLeave={e => (e.currentTarget.style.color = '#777')}>‹</button>
             <div style={{ textAlign: 'center' }}>
               <p style={{ color: '#fff', fontSize: 13, fontWeight: 600, minWidth: 160, textAlign: 'center' }}>{weekLabel}</p>
               <p style={{ color: '#444', fontSize: 11, marginTop: 2 }}>{monday.getDate()} – {friday.getDate()} {MOIS_FR[friday.getMonth()]}</p>
             </div>
-
-            <button
-              onClick={() => setWeekOffset(w => w + 1)}
-              style={{ width: 32, height: 32, borderRadius: 8, border: '1px solid #222', background: '#161616', color: '#777', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, transition: 'all 0.15s' }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#ccc')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#777')}
-            >›</button>
-
+            <button onClick={() => setWeekOffset(w => w + 1)} style={{ width: 32, height: 32, borderRadius: 8, border: '1px solid #222', background: '#161616', color: '#777', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, transition: 'all 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = '#ccc')} onMouseLeave={e => (e.currentTarget.style.color = '#777')}>›</button>
             {weekOffset !== 0 && (
-              <button
-                onClick={() => setWeekOffset(0)}
-                style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', padding: '5px 12px', borderRadius: 6, background: ACCENT + '18', color: ACCENT, border: `1px solid ${ACCENT}44`, cursor: 'pointer', transition: 'all 0.15s' }}
-              >Aujourd'hui</button>
+              <button onClick={() => setWeekOffset(0)} style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', padding: '5px 12px', borderRadius: 6, background: ACCENT + '18', color: ACCENT, border: `1px solid ${ACCENT}44`, cursor: 'pointer', transition: 'all 0.15s' }}>Aujourd'hui</button>
             )}
           </div>
         </div>
@@ -196,11 +179,9 @@ export default function EmploiDuTempsPage() {
           {Object.entries(TYPE_META).map(([type, meta]) => {
             const active = activeTypes.has(type)
             return (
-              <button
-                key={type}
-                onClick={() => toggleType(type)}
-                style={{ padding: '5px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', cursor: 'pointer', transition: 'all 0.15s', border: `1px solid ${active ? meta.border : '#2a2a2a'}`, background: active ? meta.chip : 'transparent', color: active ? meta.text : '#555' }}
-              >{meta.label}</button>
+              <button key={type} onClick={() => toggleType(type)} style={{ padding: '5px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', cursor: 'pointer', transition: 'all 0.15s', border: `1px solid ${active ? meta.border : '#2a2a2a'}`, background: active ? meta.chip : 'transparent', color: active ? meta.text : '#555' }}>
+                {meta.label}
+              </button>
             )
           })}
         </div>
@@ -253,6 +234,48 @@ export default function EmploiDuTempsPage() {
                   </div>
                 )
               })}
+            </div>
+          </div>
+        )}
+
+        {/* ── Stats section ─────────────────────────────────────────── */}
+        {allSeances.length > 0 && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginTop: '1.5rem' }}>
+            <div style={{ background: '#161616', border: '1px solid #1f1f1f', borderRadius: 14, padding: '1.25rem 1.5rem' }}>
+              <h3 style={{ color: '#fff', fontSize: 14, fontWeight: 600, marginBottom: '1rem' }}>Volume horaire par type</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                {Object.entries(heuresParType).map(([type, h]) => {
+                  const meta = TYPE_META[type] ?? TYPE_META.cours
+                  const pct  = (h / maxH) * 100
+                  return (
+                    <div key={type}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <span style={{ color: meta.text, fontSize: 12, fontWeight: 600 }}>{meta.label}</span>
+                        <span style={{ color: '#555', fontSize: 12 }}>{h.toFixed(1)}h</span>
+                      </div>
+                      <div style={{ height: 4, background: '#1f1f1f', borderRadius: 2 }}>
+                        <div style={{ height: '100%', width: `${pct}%`, background: meta.border, borderRadius: 2, transition: 'width 0.5s' }} />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+            <div style={{ background: '#161616', border: '1px solid #1f1f1f', borderRadius: 14, padding: '1.25rem 1.5rem' }}>
+              <h3 style={{ color: '#fff', fontSize: 14, fontWeight: 600, marginBottom: '1rem' }}>Salles fréquentées</h3>
+              {topSalles.length === 0 ? (
+                <p style={{ color: '#444', fontSize: 13 }}>Aucune salle renseignée</p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  {topSalles.map(([salle, count], i) => (
+                    <div key={salle} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <span style={{ width: 20, height: 20, borderRadius: '50%', flexShrink: 0, background: i === 0 ? ACCENT : '#222', color: i === 0 ? '#fff' : '#555', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{i + 1}</span>
+                      <span style={{ flex: 1, color: '#ccc', fontSize: 13 }}>{salle}</span>
+                      <span style={{ color: '#555', fontSize: 12 }}>{count} séance{count > 1 ? 's' : ''}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
