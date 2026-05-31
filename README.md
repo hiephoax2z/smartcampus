@@ -1,8 +1,11 @@
 # SmartCampus
 
+
 Application de gestion de campus universitaire 
 
+
 ## Stack technique
+
 
 | Couche | Techno |
 |---|---|
@@ -12,20 +15,27 @@ Application de gestion de campus universitaire
 | HTTP Client | Axios |
 | Routing | React Router v6 |
 
+
 ## Prérequis
+
 
 -PHP 8.2+
 -MySQL 8+
 -Node.js 18+
 -npm 9+
 
+
 ## Installation
+
 
 ### 1. Cloner le projet
 
+
 ```bash
+
 git clone <https://github.com/hiephoax2z/smartcampus.git>
 cd smart-campus
+
 ```
 
 ### 2. Base de données
@@ -69,7 +79,15 @@ npm install
 npm run dev
 ```
 
-L'application est accessible sur **http://localhost:5173**
+
+
+
+
+L'application est accessible sur: **http://localhost:5173**
+
+
+
+
 
 ## Comptes de démonstration
 
@@ -83,6 +101,8 @@ L'application est accessible sur **http://localhost:5173**
 | Étudiant | c.martin@etu.smartcampus.fr | password |
 | Étudiant | k.nguyen@etu.smartcampus.fr | password |
 
+
+
 ## Fonctionnalités
 
 ### Administrateur
@@ -92,14 +112,22 @@ L'application est accessible sur **http://localhost:5173**
 - Gestion des cours (liste, détail, création)
 - Saisie de notes via modal
 
+
+
+
 ### Enseignant
 - Dashboard personnalisé : ses cours, évaluations à venir, prochaines séances
 - Accès aux cours et à l'emploi du temps
 - Saisie de notes pour ses étudiants
 
+
+
 ### Étudiant
 - Dashboard : ses cours du semestre, notes récentes, emploi du temps de la semaine
 - Consultation des cours et de l'emploi du temps visuel
+
+
+
 
 ## Structure du projet
 
@@ -130,7 +158,11 @@ smart-campus/
         └── router.tsx       # Routes React Router v6
 ```
 
+
+
 ## API REST — Routes principales
+
+
 
 ```
 POST   /api/auth/login
@@ -180,3 +212,15 @@ GET    /api/dashboard/admin
 GET    /api/dashboard/enseignant
 GET    /api/dashboard/etudiant
 ```
+
+
+
+
+
+
+
+
+
+
+
+
