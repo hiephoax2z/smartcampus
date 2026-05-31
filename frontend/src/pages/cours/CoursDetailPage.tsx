@@ -1,157 +1,68 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useParams, Link } from 'react-router-dom'
+
 import api from '../../api/client'
 import { useAuth } from '../../context/AuthContext'
 import AddNoteModal from './AddNoteModal'
 
+
+/*
+ Composant principal pour afficher les détails d'un cours spécifique.
+ On affiche les infos du cours, les séances prévues, les évaluations 
+ et la liste des élèves inscrits.
+ */
+
 export default function CoursDetailPage() {
+
+  // On récupère l'ID du cours directement depuis l'URL de la page
   const { id } = useParams<{ id: string }>()
+  
+  // On récupère l'utilisateur connecté pour gérer ses droits d'accès
   const { user } = useAuth()
+  
+  // État local pour savoir si la fenêtre (modal) d'ajout de note est ouverte ou fermée
   const [modalOpen, setModalOpen] = useState(false)
 
+
+  /* * RÉCUPÉRATION DES DONNÉES (API)
+   * On utilise React Query pour gérer facilement le chargement et la mise en cache.
+   */
+
+  // 1. On va chercher les informations générales du cours
   const { data: cours, isLoading } = useQuery({
     queryKey: ['cours', id],
+
     queryFn: () => api.get(`/cours/${id}`).then((r) => r.data),
   })
 
+
+  // 2. On récupère la liste de tous les étudiants inscrits à ce cours précis
   const { data: inscrits = [] } = useQuery({
     queryKey: ['inscrits-cours', id],
+
     queryFn: () => api.get(`/inscriptions?cours_id=${id}`).then((r) => r.data),
+
+    // On ne lance la requête que si on a bien un ID valide
     enabled: !!id,
   })
 
+
+  // 3. On récupère toutes les évaluations (contrôles, examens) liées au cours
   const { data: evaluations = [] } = useQuery({
     queryKey: ['evaluations-cours', id],
+
     queryFn: () => api.get(`/evaluations?cours_id=${id}`).then((r) => r.data),
+
     enabled: !!id,
   })
 
+
+  // 4. On récupère l'emploi du temps, c'est-à-dire les séances du cours
   const { data: seances = [] } = useQuery({
     queryKey: ['seances-cours', id],
+
     queryFn: () => api.get(`/seances?cours_id=${id}`).then((r) => r.data),
+
     enabled: !!id,
   })
-
-  if (isLoading) return <p className="p-6 text-gray-500">Chargement…</p>
-  if (!cours) return <p className="p-6 text-red-500">Cours introuvable</p>
-
-  const canSaisirNote = user?.role === 'admin' || user?.role === 'enseignant'
-
-  return (
-    <div className="p-6 space-y-6 max-w-3xl">
-      <div className="flex items-center justify-between">
-        <Link to="/cours" className="text-sm text-blue-600 hover:underline">
-          ← Retour aux cours
-        </Link>
-        {canSaisirNote && (
-          <button
-            onClick={() => setModalOpen(true)}
-            className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition"
-          >
-            + Saisir une note
-          </button>
-        )}
-      </div>
-
-      {/* Infos cours */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-2">
-        <div className="flex items-start justify-between">
-          <div>
-            <span className="font-mono text-sm text-blue-600">{cours.code}</span>
-            <h1 className="text-2xl font-bold text-gray-800">{cours.nom}</h1>
-          </div>
-          <span className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded font-medium">
-            {cours.credits} crédits
-          </span>
-        </div>
-        {cours.description && (
-          <p className="text-sm text-gray-600 mt-2">{cours.description}</p>
-        )}
-        <div className="grid grid-cols-2 gap-2 text-sm mt-4">
-          <span className="text-gray-500">Niveau</span>
-          <span className="font-medium">{cours.niveau}</span>
-          <span className="text-gray-500">Semestre</span>
-          <span className="font-medium">{cours.semestre}</span>
-          <span className="text-gray-500">Enseignant</span>
-          <span className="font-medium">{cours.enseignant_nom ?? '—'}</span>
-          <span className="text-gray-500">Inscrits</span>
-          <span className="font-medium">{inscrits.length} / {cours.capacite_max}</span>
-        </div>
-      </div>
-
-      {/* Séances */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-3">
-        <h2 className="font-semibold text-gray-700">Séances ({seances.length})</h2>
-        {seances.length === 0 ? (
-          <p className="text-sm text-gray-400">Aucune séance</p>
-        ) : (
-          <ul className="space-y-1 text-sm">
-            {seances.map((s: { id: number; jour_semaine: string; heure_debut: string; heure_fin: string; type: string; salle_nom?: string }) => (
-              <li key={s.id} className="flex gap-3 items-center">
-                <span className="capitalize w-24 text-gray-600">{s.jour_semaine}</span>
-                <span className="text-gray-800">{s.heure_debut} – {s.heure_fin}</span>
-                <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">{s.type}</span>
-                {s.salle_nom && <span className="ml-auto text-gray-400 text-xs">{s.salle_nom}</span>}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* Évaluations */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-3">
-        <h2 className="font-semibold text-gray-700">Évaluations ({evaluations.length})</h2>
-        {evaluations.length === 0 ? (
-          <p className="text-sm text-gray-400">Aucune évaluation</p>
-        ) : (
-          <ul className="space-y-2 text-sm">
-            {evaluations.map((ev: { id: number; nom: string; type: string; coefficient: number; date_evaluation?: string; verrouille: number; moyenne_classe?: number }) => (
-              <li key={ev.id} className="flex gap-3 items-center">
-                <span className="flex-1 font-medium text-gray-800">{ev.nom}</span>
-                <span className="text-gray-400 text-xs">{ev.type}</span>
-                <span className="text-gray-400 text-xs">coeff. {ev.coefficient}</span>
-                {ev.verrouille ? (
-                  <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">🔒</span>
-                ) : (
-                  <span className="text-xs bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded">Ouvert</span>
-                )}
-                {ev.moyenne_classe != null && (
-                  <span className="text-blue-600 font-bold text-xs">{ev.moyenne_classe}/20</span>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* Étudiants inscrits */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-3">
-        <h2 className="font-semibold text-gray-700">Étudiants inscrits ({inscrits.length})</h2>
-        {inscrits.length === 0 ? (
-          <p className="text-sm text-gray-400">Aucun étudiant inscrit</p>
-        ) : (
-          <ul className="space-y-1 text-sm">
-            {inscrits.map((i: { etudiant_id: number; nom: string; prenom: string; email: string; numero_etudiant: string }) => (
-              <li key={i.etudiant_id} className="flex items-center gap-3">
-                <span className="font-mono text-xs text-gray-400 w-28">{i.numero_etudiant}</span>
-                <span className="font-medium text-gray-800">{i.prenom} {i.nom}</span>
-                <span className="ml-auto text-gray-400 text-xs">{i.email}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* Modal saisie note */}
-      {modalOpen && (
-        <AddNoteModal
-          coursId={Number(id)}
-          inscrits={inscrits}
-          evaluations={evaluations}
-          onClose={() => setModalOpen(false)}
-        />
-      )}
-    </div>
-  )
-}
