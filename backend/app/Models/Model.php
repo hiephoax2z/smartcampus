@@ -1,23 +1,26 @@
 <?php
 
 declare(strict_types=1);
-
+//classe abstraite utilisée pour les étudiants, cours, etc
 abstract class Model
 {
     protected PDO $db;
     protected string $table;
+
 
     public function __construct()
     {
         $this->db = getConnection();
     }
 
+    //on doit pouvoir selectionner toutes les données d'une entité
     public function findAll(): array
     {
         $stmt = $this->db->query("SELECT * FROM {$this->table}");
         return $stmt->fetchAll();
     }
 
+    //on doit pouvoir selectionne une entité en particulier par son id
     public function findById(int $id): array|false
     {
         $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = ?");
@@ -25,6 +28,7 @@ abstract class Model
         return $stmt->fetch();
     }
 
+    //on doit pouvoir creer une entite
     public function create(array $data): int
     {
         $columns = implode(', ', array_keys($data));
