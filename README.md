@@ -1,6 +1,6 @@
 # SmartCampus
 
-Application de gestion de campus universitaire — Backend PHP vanilla (MVC) + Frontend React TypeScript.
+Application de gestion de campus universitaire 
 
 ## Stack technique
 
@@ -14,32 +14,33 @@ Application de gestion de campus universitaire — Backend PHP vanilla (MVC) + F
 
 ## Prérequis
 
-- PHP 8.2+
-- MySQL 8+
-- Node.js 18+
-- npm 9+
+-PHP 8.2+
+-MySQL 8+
+-Node.js 18+
+-npm 9+
 
 ## Installation
 
 ### 1. Cloner le projet
 
 ```bash
-git clone <url-du-repo>
+git clone <https://github.com/hiephoax2z/smartcampus.git>
 cd smart-campus
 ```
 
 ### 2. Base de données
 
 ```bash
-# Créer la base et les tables
+# Créer la base et les tables les ajouter dans notre wamp ou mamp
 mysql -u root < database/schema.sql
 
-# Insérer les données de démo
+# Insérer les données de démo pareils 
 mysql -u root < database/seed.sql
 ```
+#verifier si urf-8 pour les accents 
 
 > Si MySQL nécessite un mot de passe : `mysql -u root -p < database/schema.sql`
-
+#depednant si wamp = pas de mot de passe 
 ### 3. Configurer le backend
 
 Éditer `backend/config/database.php` si besoin :
@@ -49,7 +50,7 @@ define('DB_HOST', 'localhost');
 define('DB_PORT', '3306');
 define('DB_NAME', 'smartcampus');
 define('DB_USER', 'root');
-define('DB_PASS', '');        // adapter si mot de passe MySQL
+define('DB_PASS', '');        // adapter si mot de passe MySQL (wamp pas de mdp)
 ```
 
 ### 4. Lancer le backend PHP
@@ -60,7 +61,7 @@ php -S localhost:8000 -t public
 
 Le backend écoute sur `http://localhost:8000`.
 
-### 5. Installer et lancer le frontend
+### 5. Installer et lancer le frontend sur uin nouveau terminale 
 
 ```bash
 cd frontend
