@@ -9,6 +9,9 @@ require_once ROOT_PATH . '/app/Controllers/EtudiantController.php';
 require_once ROOT_PATH . '/app/Controllers/EnseignantController.php';
 require_once ROOT_PATH . '/app/Controllers/CoursController.php';
 require_once ROOT_PATH . '/app/Controllers/InscriptionController.php';
+require_once ROOT_PATH . '/app/Controllers/NoteController.php';
+require_once ROOT_PATH . '/app/Controllers/EvaluationController.php';
+require_once ROOT_PATH . '/app/Controllers/SeanceController.php';
 require_once ROOT_PATH . '/app/Middleware/AuthMiddleware.php';
 
 header('Content-Type: application/json');
@@ -154,6 +157,69 @@ match (true) {
         => (function () use ($m) {
             AuthMiddleware::hasRole('admin');
             (new InscriptionController())->destroy((int)$m[1]);
+        })(),
+
+    // ── Notes ─────────────────────────────────────────────────────────────
+    $method === 'GET' && $uri === '/api/notes'
+        => (function () {
+            AuthMiddleware::isAuthenticated();
+            (new NoteController())->index();
+        })(),
+
+    $method === 'POST' && $uri === '/api/notes'
+        => (function () {
+            AuthMiddleware::isAuthenticated();
+            (new NoteController())->store();
+        })(),
+
+    $method === 'PUT' && preg_match('#^/api/notes/(\d+)$#', $uri, $m)
+        => (function () use ($m) {
+            AuthMiddleware::isAuthenticated();
+            (new NoteController())->update((int)$m[1]);
+        })(),
+
+    // ── Évaluations ───────────────────────────────────────────────────────
+    $method === 'GET' && $uri === '/api/evaluations'
+        => (function () {
+            AuthMiddleware::isAuthenticated();
+            (new EvaluationController())->index();
+        })(),
+
+    $method === 'POST' && $uri === '/api/evaluations'
+        => (function () {
+            AuthMiddleware::isAuthenticated();
+            (new EvaluationController())->store();
+        })(),
+
+    $method === 'PUT' && preg_match('#^/api/evaluations/(\d+)/verrouiller$#', $uri, $m)
+        => (function () use ($m) {
+            AuthMiddleware::isAuthenticated();
+            (new EvaluationController())->verrouiller((int)$m[1]);
+        })(),
+
+    // ── Séances ───────────────────────────────────────────────────────────
+    $method === 'GET' && $uri === '/api/seances'
+        => (function () {
+            AuthMiddleware::isAuthenticated();
+            (new SeanceController())->index();
+        })(),
+
+    $method === 'POST' && $uri === '/api/seances'
+        => (function () {
+            AuthMiddleware::hasRole('admin');
+            (new SeanceController())->store();
+        })(),
+
+    $method === 'PUT' && preg_match('#^/api/seances/(\d+)$#', $uri, $m)
+        => (function () use ($m) {
+            AuthMiddleware::hasRole('admin');
+            (new SeanceController())->update((int)$m[1]);
+        })(),
+
+    $method === 'DELETE' && preg_match('#^/api/seances/(\d+)$#', $uri, $m)
+        => (function () use ($m) {
+            AuthMiddleware::hasRole('admin');
+            (new SeanceController())->destroy((int)$m[1]);
         })(),
 
     // ── Users ─────────────────────────────────────────────────────────────
